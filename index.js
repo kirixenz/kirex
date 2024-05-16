@@ -3,7 +3,6 @@ const Discord = require("discord.js");
 const chalk = require('chalk');
 const config = require(`./botconfig.js`)
 const prefix = config.prefix;
-const keepAliveServer = require('./keep_alive.js');
 
 const client = new Discord.Client({
    intents : [
@@ -75,34 +74,33 @@ function hasTicket(g, interaction) {
 
 
 
-async function checktoken(token){
+async function checktoken(token) {
   if (!token) {
-       console.log(chalk.redBright(`NO TOKEN PROVIDED`))
-      process.exit()
-    }
-    
-    if(token.length != "MTE4NzI4ODcwNTEwMzMwMjc0Ng.GPYYHc.z3wgGrJgIlscFwFuqLZO6O5phiWXMe-t0kYWKo".length) {
-      console.log(chalk.redBright(`INAVLID TOKEN`))
-      process.exit()
-    }
-    
+      console.log(chalk.redBright(`NO TOKEN PROVIDED`));
+      process.exit();
+  }
+
+  if (token.length != process.env.token.length) {
+      console.log(chalk.redBright(`INVALID TOKEN`));
+      process.exit();
+  }
+
   let testclient = new Discord.Client({
-   intents : [
-     Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING ,
-  ]
-});
+      intents: [
+          Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+      ]
+  });
   try {
-    await testclient.login(token)
-    testclient.on("ready", () => testclient.destroy() )
-    
-   
-    
+      await testclient.login(token);
+      testclient.on("ready", () => testclient.destroy());
+
   } catch {
-    console.log(chalk.redBright("INVALID TOKEN"))
-    process.exit()
+      console.log(chalk.redBright("INVALID TOKEN"));
+      process.exit();
   }
 }
-checktoken(config.token)
+
+checktoken(process.env.token);
 
 
 
@@ -647,6 +645,7 @@ if (interaction.customId == `no`) {
 
 
 
-  client.login(config.token)
+client.login(process.env.token);
+
 
 //CREDITS : Tejas Lamba#1924
